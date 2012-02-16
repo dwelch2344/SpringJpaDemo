@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Person implements Serializable {
@@ -17,17 +18,20 @@ public class Person implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@Column
+	@Column(name="first_name")
 	private String firstName;
 
-	@Column
+	@Column(name="last_name")
 	private String lastName;
+	
+	@ManyToOne
+	private Organization employer;
 
 	public Person() {
 	}
 
 	public Person(String firstName, String lastName) {
-		super();
+		this();
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}
@@ -54,6 +58,14 @@ public class Person implements Serializable {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+	
+	public Organization getEmployer() {
+		return employer;
+	}
+
+	public void setEmployer(Organization employer) {
+		this.employer = employer;
 	}
 
 	@Override

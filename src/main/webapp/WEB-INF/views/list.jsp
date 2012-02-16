@@ -6,9 +6,11 @@
 </head>
 <body>
 <h1>Listing People</h1>
-<c:forEach items="${people}" var="v_person">
-	<a href="edit?id=${v_person.id}">${v_person.id} -
-	${v_person.firstName} ${v_person.lastName}</a>
+<c:forEach items="${people}" var="person">
+	<a href="edit?id=${person.id}"> ${person.id} - ${person.firstName} ${person.lastName}</a>
+	<c:if test="${person.employer != null}">
+		(<a href="../org/${person.employer.id}">${person.employer.name}</a>)
+	</c:if>
 	<br />
 </c:forEach>
 <a href="edit"> Add Person</a>
