@@ -22,10 +22,16 @@
     </p>
     <p>
         Organization<br/>
-        <%-- <form:select path="employer" items="${organizations}" itemLabel="name" itemValue="id" /> --%>
-        <spring:bind path="employer" >
+        <%-- <form:checkboxes  path="employers" items="${organizations}" itemLabel="name" itemValue="id" /> --%>
+        <spring:bind path="employers" >
         	<c:forEach items="${organizations}" var="org">
-        		<input type="radio" id="${status.expression}-${org.id}" name="${status.expression}" value="${org.id}" ${org.id == status.value ? 'checked="true"' : ''}/>
+        		<c:set var="checked" value="false" />
+        		<c:forEach items="${person.employers}" var="employer">
+        			<c:if test="${org.id == employer.id}"> 
+        				<c:set var="checked" value="true" />
+        			</c:if>
+        		</c:forEach>
+        		<input type="checkbox" id="${status.expression}-${org.id}" name="${status.expression}" value="${org.id}" ${checked == true ? 'checked="true"' : ''}/>
         		<label for="${status.expression}-${org.id}"> ${org.name} </label>
         	</c:forEach>
         </spring:bind>

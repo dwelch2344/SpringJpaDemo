@@ -1,13 +1,18 @@
 package com.example.SpringJpaDemo.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 @Entity
 public class Person implements Serializable {
@@ -24,8 +29,18 @@ public class Person implements Serializable {
 	@Column(name="last_name")
 	private String lastName;
 	
-	@ManyToOne
-	private Organization employer;
+	@ManyToMany(fetch=FetchType.EAGER, cascade=CascadeType.MERGE)
+	@JoinTable(name = "PERSON_ORGANIZATION", 
+		joinColumns = { @JoinColumn(name = "person_id") }, 
+		inverseJoinColumns = { @JoinColumn(name = "employer_id") 
+	})
+	private Set<Organization> employers;
+	public Set<Organization> getEmployers() {
+		return employers;
+	}
+	public void setEmployers(Set<Organization> employers) {
+		this.employers = employers;
+	}
 
 	public Person() {
 	}
@@ -60,13 +75,6 @@ public class Person implements Serializable {
 		this.lastName = lastName;
 	}
 	
-	public Organization getEmployer() {
-		return employer;
-	}
-
-	public void setEmployer(Organization employer) {
-		this.employer = employer;
-	}
 
 	@Override
 	public String toString() {

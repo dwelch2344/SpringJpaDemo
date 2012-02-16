@@ -8,8 +8,12 @@
 <h1>Listing People</h1>
 <c:forEach items="${people}" var="person">
 	<a href="edit?id=${person.id}"> ${person.id} - ${person.firstName} ${person.lastName}</a>
-	<c:if test="${person.employer != null}">
-		(<a href="../org/${person.employer.id}">${person.employer.name}</a>)
+	<c:if test="${not empty person.employers}">
+		(
+		<c:forEach items="${person.employers}" var="employer">
+			<a href="../org/${employer.id}">${employer.name}</a>
+		</c:forEach>
+		)
 	</c:if>
 	<br />
 </c:forEach>

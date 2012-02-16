@@ -1,11 +1,12 @@
 package com.example.SpringJpaDemo.controller;
 
-import java.beans.PropertyEditorSupport;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomCollectionEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -42,7 +43,6 @@ public class PersonController {
  		} else {
  			person = personDao.find(id);
  		}
- 		
  		List<Organization> orgs = orgDao.getOrganizations();
  		mav.addObject("organizations", orgs.toArray());
  		mav.addObject("person", person);
@@ -53,6 +53,7 @@ public class PersonController {
 	@RequestMapping(method=RequestMethod.POST,value="edit") 
 	public String savePerson(@ModelAttribute Person person) {
 		logger.debug("Received postback on person "+person);
+		System.out.println(person.getEmployers());
 		personDao.save(person);
 		return "redirect:list";
 	}
@@ -66,53 +67,17 @@ public class PersonController {
 		mav.addObject("people",people);
 		mav.setViewName("list");
 		return mav;
-		
 	}
 	
 	@InitBinder
 	public void initBinder(ServletRequestDataBinder binder){
-		binder.registerCustomEditor(Organization.class, "employer", new PropertyEditorSupport(){
-			
-			@Override
-			public String getAsText() {
-				String result = null;
-				Object value = getValue();
-				if(value == null){
-					result = "";
-				}else if(value instanceof Long){
-					result = value.toString();
-				}else if(value instanceof Organization){
-					result = String.valueOf( ((Organization) value).getId() );
-				}
-				return result;
+		binder.registerCustomEditor(Set.class, "employers", new CustomCollectionEditor(Set.class) {
+			protected Object convertElement(Object element) {
+				Long id = Long.valueOf(element.toString());
+				Organization org = orgDao.getById(id);
+				return org;
 			}
-			
-			@Override
-			public void setAsText(String text) throws IllegalArgumentException {
-				if(text == null || text.trim().isEmpty()){
-					setValue(null);
-				}else{
-					Long id = Long.valueOf(text);
-					Organization org = orgDao.getById(id);
-					setValue(org);
-				}
-			}
-			
-			@Override
-			public Object getValue() {
-				// TODO Auto-generated method stub
-				Object o = super.getValue();
-				return o;
-			}
-			
-			@Override
-			public Object getSource() {
-				// TODO Auto-generated method stub
-				return super.getSource();
-			}
-		
 		});
-		
 	}
 
 }

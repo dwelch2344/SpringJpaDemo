@@ -1,5 +1,8 @@
 package com.example.SpringJpaDemo.config;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +24,29 @@ public class DataPopulator {
 	
 	@PostConstruct
 	public void onAppStart(){
-		for(String name : new String[]{"USPS", "UPS", "FedEx"}){
-			orgDao.save(new Organization(name));
+		
+		
+		Set<Organization> orgs = new HashSet<Organization>(orgDao.getOrganizations());
+		if(orgs.isEmpty()){
+			for(String name : new String[]{"USPS", "UPS", "FedEx"}){
+				Organization org = new Organization(name);
+				org = orgDao.save(org);
+				orgs.add(org);
+			}
 		}
 		
-		personDao.save(new Person("Jimbo", "Jones"));
-		personDao.save(new Person("Franky", "Figgs"));
+		if(personDao.getPeople().isEmpty()){
+			{
+				Person person = new Person("Jimbo", "Jones");
+				person.setEmployers(orgs);
+				personDao.save(person);
+			}
+			
+			{
+				Person person = new Person("Franky", "Figgs");
+				person.setEmployers(orgs);
+				personDao.save(person);
+			}
+		}
 	}
 }

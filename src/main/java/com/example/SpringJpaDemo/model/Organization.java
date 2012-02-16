@@ -9,7 +9,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 
 @Entity
@@ -23,7 +25,11 @@ public class Organization implements Serializable {
 	
 	private String name;
 	
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="employer")
+	@ManyToMany(fetch=FetchType.EAGER)
+	@JoinTable(name = "PERSON_ORGANIZATION", 
+		joinColumns = { @JoinColumn(name = "employer_id") }, 
+		inverseJoinColumns = { @JoinColumn(name = "person_id") 
+	})
 	private Set<Person> employees = new HashSet<Person>();
 
 	public Organization() {}

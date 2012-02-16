@@ -1,2 +1,10 @@
 target/**
 target
+
+target/classes/com/example/SpringJpaDemo/model/Person.class
+
+target/m2e-wtp/web-resources/META-INF/maven/com.example/SpringJpaDemo/pom.properties
+
+target/m2e-wtp/web-resources/META-INF/maven/com.example/SpringJpaDemo/pom.xml
+
+target/classes/com/example/SpringJpaDemo/controller/PersonController.class
